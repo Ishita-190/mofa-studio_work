@@ -436,7 +436,13 @@ impl MoFaASRScreen {
         };
 
         let count = {
-            let mut guard = controller.lock().expect("ChatController mutex poisoned");
+            let mut guard = match controller.lock() {
+                Ok(g) => g,
+                Err(poisoned) => {
+                    log::warn!("ChatController mutex poisoned; recovering inner state");
+                    poisoned.into_inner()
+                }
+            };
             let state = guard.dangerous_state_mut();
             state.messages.clear();
             for msg in messages {
@@ -479,13 +485,34 @@ impl MoFaASRScreen {
     fn handle_start(&mut self, cx: &mut Cx) {
         // Clear per-engine chat controllers
         if let Some(ref controller) = self.paraformer_chat_controller {
-            controller.lock().expect("ChatController mutex poisoned").dangerous_state_mut().messages.clear();
+            let mut guard = match controller.lock() {
+                Ok(g) => g,
+                Err(poisoned) => {
+                    log::warn!("ChatController mutex poisoned; recovering inner state");
+                    poisoned.into_inner()
+                }
+            };
+            guard.dangerous_state_mut().messages.clear();
         }
         if let Some(ref controller) = self.sensevoice_chat_controller {
-            controller.lock().expect("ChatController mutex poisoned").dangerous_state_mut().messages.clear();
+            let mut guard = match controller.lock() {
+                Ok(g) => g,
+                Err(poisoned) => {
+                    log::warn!("ChatController mutex poisoned; recovering inner state");
+                    poisoned.into_inner()
+                }
+            };
+            guard.dangerous_state_mut().messages.clear();
         }
         if let Some(ref controller) = self.stepaudio2_chat_controller {
-            controller.lock().expect("ChatController mutex poisoned").dangerous_state_mut().messages.clear();
+            let mut guard = match controller.lock() {
+                Ok(g) => g,
+                Err(poisoned) => {
+                    log::warn!("ChatController mutex poisoned; recovering inner state");
+                    poisoned.into_inner()
+                }
+            };
+            guard.dangerous_state_mut().messages.clear();
         }
         self.paraformer_last_chat_count = 0;
         self.sensevoice_last_chat_count = 0;
