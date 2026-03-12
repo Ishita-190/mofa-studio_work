@@ -7,7 +7,7 @@ edition = "2021"
 path = "src/lib.rs"
 
 [dependencies]
-makepad-widgets = { git = "https://github.com/wyeworks/makepad", rev = "53b2e5c84" }
+makepad-widgets = { git = "https://github.com/wyeworks/makepad", rev = "53b2e5c84d44d3d8b774639b7f9ae5f98b4bc664" }
 mofa-widgets = { path = "../../mofa-widgets" }
 mofa-dora-bridge = { path = "../../mofa-dora-bridge" }
 mofa-ui = { path = "../../mofa-ui" }
